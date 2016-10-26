@@ -15,6 +15,7 @@
 package mongodb
 
 import (
+	"fmt"
 	"testing"
 
 	eh "github.com/looplab/eventhorizon"
@@ -23,7 +24,7 @@ import (
 
 func TestEventStore(t *testing.T) {
 	config := &EventStoreConfig{
-		Table:  "eventhorizonTest-" + eh.NewUUID().String(),
+		Table:  fmt.Sprintf("eventhorizonTest-%v", eh.NewID()),
 		Region: "eu-west-1",
 	}
 	store, err := NewEventStore(config)

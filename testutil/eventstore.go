@@ -15,6 +15,7 @@
 package testutil
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 	"testing"
@@ -72,7 +73,7 @@ func EventStoreCommonTests(t *testing.T, store eh.EventStore) []eh.Event {
 	savedEvents = append(savedEvents, event3)
 
 	t.Log("load events for non-existing aggregate")
-	events, err := store.Load(eh.NewUUID())
+	events, err := store.Load(eh.NewID())
 	if err != nil {
 		t.Error("there should be no error:", err)
 	}
@@ -109,9 +110,7 @@ func EventStoreCommonTests(t *testing.T, store eh.EventStore) []eh.Event {
 func eventsToString(events []eh.Event) string {
 	parts := make([]string, len(events))
 	for i, e := range events {
-		parts[i] = string(e.AggregateType()) +
-			":" + string(e.EventType()) +
-			" (" + e.AggregateID().String() + ")"
+		parts[i] = fmt.Sprintf("%s:%s (%v)", e.AggregateType(), e.EventType(), e.AggregateID())
 	}
 	return strings.Join(parts, ", ")
 }

@@ -26,29 +26,29 @@ const (
 
 // CreateInvite is a command for creating invites.
 type CreateInvite struct {
-	InvitationID eh.UUID
+	InvitationID ID64
 	Name         string
 	Age          int `eh:"optional"`
 }
 
-func (c CreateInvite) AggregateID() eh.UUID            { return c.InvitationID }
+func (c CreateInvite) AggregateID() eh.ID              { return c.InvitationID }
 func (c CreateInvite) AggregateType() eh.AggregateType { return InvitationAggregateType }
 func (c CreateInvite) CommandType() eh.CommandType     { return CreateInviteCommand }
 
 // AcceptInvite is a command for accepting invites.
 type AcceptInvite struct {
-	InvitationID eh.UUID
+	InvitationID ID64
 }
 
-func (c AcceptInvite) AggregateID() eh.UUID            { return c.InvitationID }
+func (c AcceptInvite) AggregateID() eh.ID              { return c.InvitationID }
 func (c AcceptInvite) AggregateType() eh.AggregateType { return InvitationAggregateType }
 func (c AcceptInvite) CommandType() eh.CommandType     { return AcceptInviteCommand }
 
 // DeclineInvite is a command for declining invites.
 type DeclineInvite struct {
-	InvitationID eh.UUID
+	InvitationID ID64
 }
 
-func (c DeclineInvite) AggregateID() eh.UUID            { return c.InvitationID }
+func (c DeclineInvite) AggregateID() eh.ID              { return c.InvitationID }
 func (c DeclineInvite) AggregateType() eh.AggregateType { return InvitationAggregateType }
 func (c DeclineInvite) CommandType() eh.CommandType     { return DeclineInviteCommand }

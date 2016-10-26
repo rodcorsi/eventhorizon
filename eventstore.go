@@ -27,13 +27,13 @@ type EventStore interface {
 	Save(events []Event, originalVersion int) error
 
 	// Load loads all events for the aggregate id from the store.
-	Load(UUID) ([]Event, error)
+	Load(ID) ([]Event, error)
 }
 
 // AggregateRecord is a stored record of an aggregate in form of its events.
 // NOTE: Not currently used.
 type AggregateRecord interface {
-	AggregateID() UUID
+	AggregateID() ID
 	Version() int
 	EventRecords() []EventRecord
 }

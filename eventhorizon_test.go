@@ -19,10 +19,10 @@ import (
 )
 
 func init() {
-	RegisterAggregate(func(id UUID) Aggregate {
+	RegisterAggregate(func(id ID) Aggregate {
 		return &TestAggregate{AggregateBase: NewAggregateBase(id)}
 	})
-	RegisterAggregate(func(id UUID) Aggregate {
+	RegisterAggregate(func(id ID) Aggregate {
 		return &TestAggregate2{AggregateBase: NewAggregateBase(id)}
 	})
 
@@ -102,46 +102,46 @@ func (a *TestAggregate2) ApplyEvent(event Event) {
 }
 
 type TestCommand struct {
-	TestID  UUID
+	TestID  ID
 	Content string
 }
 
-func (t TestCommand) AggregateID() UUID            { return t.TestID }
+func (t TestCommand) AggregateID() ID              { return t.TestID }
 func (t TestCommand) AggregateType() AggregateType { return TestAggregateType }
 func (t TestCommand) CommandType() CommandType     { return TestCommandType }
 
 type TestCommand2 struct {
-	TestID  UUID
+	TestID  ID
 	Content string
 }
 
-func (t TestCommand2) AggregateID() UUID            { return t.TestID }
+func (t TestCommand2) AggregateID() ID              { return t.TestID }
 func (t TestCommand2) AggregateType() AggregateType { return TestAggregate2Type }
 func (t TestCommand2) CommandType() CommandType     { return TestCommand2Type }
 
 type TestEvent struct {
-	TestID  UUID
+	TestID  ID
 	Content string
 }
 
-func (t TestEvent) AggregateID() UUID            { return t.TestID }
+func (t TestEvent) AggregateID() ID              { return t.TestID }
 func (t TestEvent) AggregateType() AggregateType { return TestAggregateType }
 func (t TestEvent) EventType() EventType         { return TestEventType }
 
 type TestEvent2 struct {
-	TestID  UUID
+	TestID  ID
 	Content string
 }
 
-func (t TestEvent2) AggregateID() UUID            { return t.TestID }
+func (t TestEvent2) AggregateID() ID              { return t.TestID }
 func (t TestEvent2) AggregateType() AggregateType { return TestAggregate2Type }
 func (t TestEvent2) EventType() EventType         { return TestEvent2Type }
 
 type MockRepository struct {
-	Aggregates map[UUID]Aggregate
+	Aggregates map[ID]Aggregate
 }
 
-func (m *MockRepository) Load(aggregateType AggregateType, id UUID) (Aggregate, error) {
+func (m *MockRepository) Load(aggregateType AggregateType, id ID) (Aggregate, error) {
 	return m.Aggregates[id], nil
 }
 
@@ -152,7 +152,7 @@ func (m *MockRepository) Save(aggregate Aggregate) error {
 
 type MockEventStore struct {
 	Events []Event
-	Loaded UUID
+	Loaded ID
 	// Used to simulate errors in the store.
 	err error
 }
@@ -165,7 +165,7 @@ func (m *MockEventStore) Save(events []Event, originalVersion int) error {
 	return nil
 }
 
-func (m *MockEventStore) Load(id UUID) ([]Event, error) {
+func (m *MockEventStore) Load(id ID) ([]Event, error) {
 	if m.err != nil {
 		return nil, m.err
 	}

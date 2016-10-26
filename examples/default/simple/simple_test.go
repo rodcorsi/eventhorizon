@@ -24,7 +24,7 @@ import (
 	eventstore "github.com/looplab/eventhorizon/eventstore/memory"
 	readrepository "github.com/looplab/eventhorizon/readrepository/memory"
 
-	"github.com/looplab/eventhorizon/examples/domain"
+	"github.com/looplab/eventhorizon/examples/default/domain"
 )
 
 func Example() {

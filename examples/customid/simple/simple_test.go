@@ -12,37 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mongodb
+package simple
 
 import (
 	"fmt"
 	"log"
-	"os"
 
 	eh "github.com/looplab/eventhorizon"
 	commandbus "github.com/looplab/eventhorizon/commandbus/local"
 	eventbus "github.com/looplab/eventhorizon/eventbus/local"
-	eventstore "github.com/looplab/eventhorizon/eventstore/mongodb"
-	readrepository "github.com/looplab/eventhorizon/readrepository/mongodb"
+	eventstore "github.com/looplab/eventhorizon/eventstore/memory"
+	readrepository "github.com/looplab/eventhorizon/readrepository/memory"
 
-	"github.com/looplab/eventhorizon/examples/domain"
+	"github.com/looplab/eventhorizon/examples/customid/domain"
 )
 
 func Example() {
-	// Support Wercker testing with MongoDB.
-	host := os.Getenv("MONGO_PORT_27017_TCP_ADDR")
-	port := os.Getenv("MONGO_PORT_27017_TCP_PORT")
-
-	url := "localhost"
-	if host != "" && port != "" {
-		url = host + ":" + port
-	}
-
 	// Create the event store.
-	eventStore, err := eventstore.NewEventStore(url, "demo")
-	if err != nil {
-		log.Fatalf("could not create event store: %s", err)
-	}
+	eventStore := eventstore.NewEventStore()
 
 	// Create the event bus that distributes events.
 	eventBus := eventbus.NewEventBus()
@@ -73,38 +60,25 @@ func Example() {
 	commandBus.SetHandler(handler, domain.DeclineInviteCommand)
 
 	// Create and register a read model for individual invitations.
-	invitationRepository, err := readrepository.NewReadRepository(url, "demo", "invitations")
-	if err != nil {
-		log.Fatalf("could not create invitation repository: %s", err)
-	}
-	invitationRepository.SetModel(func() interface{} { return &domain.Invitation{} })
+	invitationRepository := readrepository.NewReadRepository()
 	invitationProjector := domain.NewInvitationProjector(invitationRepository)
 	eventBus.AddHandler(invitationProjector, domain.InviteCreatedEvent)
 	eventBus.AddHandler(invitationProjector, domain.InviteAcceptedEvent)
 	eventBus.AddHandler(invitationProjector, domain.InviteDeclinedEvent)
 
 	// Create and register a read model for a guest list.
-	eventID := eh.NewUUID()
-	guestListRepository, err := readrepository.NewReadRepository(url, "demo", "guest_lists")
-	if err != nil {
-		log.Fatalf("could not create guest list repository: %s", err)
-	}
-	guestListRepository.SetModel(func() interface{} { return &domain.GuestList{} })
+	eventID := domain.NewID64()
+	guestListRepository := readrepository.NewReadRepository()
 	guestListProjector := domain.NewGuestListProjector(guestListRepository, eventID)
 	eventBus.AddHandler(guestListProjector, domain.InviteCreatedEvent)
 	eventBus.AddHandler(guestListProjector, domain.InviteAcceptedEvent)
 	eventBus.AddHandler(guestListProjector, domain.InviteDeclinedEvent)
 
-	// Clear DB collections.
-	eventStore.Clear()
-	invitationRepository.Clear()
-	guestListRepository.Clear()
-
 	// Issue some invitations and responses.
 	// Note that Athena tries to decline the event, but that is not allowed
 	// by the domain logic in InvitationAggregate. The result is that she is
 	// still accepted.
-	athenaID := eh.NewUUID()
+	athenaID := domain.NewID64()
 	commandBus.HandleCommand(&domain.CreateInvite{InvitationID: athenaID, Name: "Athena", Age: 42})
 	commandBus.HandleCommand(&domain.AcceptInvite{InvitationID: athenaID})
 	err = commandBus.HandleCommand(&domain.DeclineInvite{InvitationID: athenaID})
@@ -112,11 +86,11 @@ func Example() {
 		log.Printf("error: %s\n", err)
 	}
 
-	hadesID := eh.NewUUID()
+	hadesID := domain.NewID64()
 	commandBus.HandleCommand(&domain.CreateInvite{InvitationID: hadesID, Name: "Hades"})
 	commandBus.HandleCommand(&domain.AcceptInvite{InvitationID: hadesID})
 
-	zeusID := eh.NewUUID()
+	zeusID := domain.NewID64()
 	commandBus.HandleCommand(&domain.CreateInvite{InvitationID: zeusID, Name: "Zeus"})
 	commandBus.HandleCommand(&domain.DeclineInvite{InvitationID: zeusID})
 
@@ -137,12 +111,6 @@ func Example() {
 		fmt.Printf("guest list: %d guests (%d accepted, %d declined)\n",
 			l.NumGuests, l.NumAccepted, l.NumDeclined)
 	}
-
-	// records := eventStore.FindAllEventRecords()
-	// fmt.Printf("event records:\n")
-	// for _, r := range records {
-	// 	fmt.Printf("%#v\n", r)
-	// }
 
 	// Output:
 	// invitation: Athena - accepted

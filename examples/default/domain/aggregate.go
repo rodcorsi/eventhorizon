@@ -21,7 +21,7 @@ import (
 )
 
 func init() {
-	eh.RegisterAggregate(func(id eh.UUID) eh.Aggregate {
+	eh.RegisterAggregate(func(id eh.ID) eh.Aggregate {
 		return NewInvitationAggregate(id)
 	})
 }
@@ -44,7 +44,7 @@ type InvitationAggregate struct {
 }
 
 // NewInvitationAggregate creates a new InvitationAggregate with an ID.
-func NewInvitationAggregate(id eh.UUID) *InvitationAggregate {
+func NewInvitationAggregate(id eh.ID) *InvitationAggregate {
 	return &InvitationAggregate{
 		AggregateBase: eh.NewAggregateBase(id),
 	}
@@ -75,7 +75,7 @@ func (i *InvitationAggregate) HandleCommand(command eh.Command) error {
 			return nil
 		}
 
-		i.StoreEvent(&InviteAccepted{i.AggregateID()})
+		i.StoreEvent(&InviteAccepted{i.AggregateID().(eh.UUID)})
 		return nil
 
 	case *DeclineInvite:
@@ -91,7 +91,7 @@ func (i *InvitationAggregate) HandleCommand(command eh.Command) error {
 			return nil
 		}
 
-		i.StoreEvent(&InviteDeclined{i.AggregateID()})
+		i.StoreEvent(&InviteDeclined{i.AggregateID().(eh.UUID)})
 		return nil
 	}
 	return fmt.Errorf("couldn't handle command")

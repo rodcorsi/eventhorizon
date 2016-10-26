@@ -14,19 +14,13 @@
 
 package eventhorizon
 
-// Command is a domain command that is sent to a Dispatcher.
-//
-// A command name should 1) be in present tense and 2) contain the intent
-// (MoveCustomer vs CorrectCustomerAddress).
-//
-// The command should contain all the data needed when handling it as fields.
-// These fields can take an optional "eh" tag, which adds properties. For now
-// only "optional" is a valid tag: `eh:"optional"`.
-type Command interface {
-	AggregateID() ID
-	AggregateType() AggregateType
-	CommandType() CommandType
+// ID is an unique identifier interface
+type ID interface {
+	String() string
 }
 
-// CommandType is the type of a command, used as its unique identifier.
-type CommandType string
+// NewID generates a new id
+// Alternatively for a custom id, any func() ID can be used instead.
+var NewID = func() ID {
+	return NewUUID()
+}
