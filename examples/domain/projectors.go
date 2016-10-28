@@ -20,7 +20,7 @@ import (
 
 // Invitation is a read model object for an invitation.
 type Invitation struct {
-	ID     ID64
+	ID     eh.ID
 	Name   string
 	Age    int
 	Status string
@@ -70,7 +70,7 @@ func (p *InvitationProjector) HandleEvent(event eh.Event) {
 
 // GuestList is a read model object for the guest list.
 type GuestList struct {
-	Id          ID64 `json:"id"         bson:"_id"`
+	Id          eh.ID `json:"id"         bson:"_id"`
 	NumGuests   int
 	NumAccepted int
 	NumDeclined int
@@ -79,11 +79,11 @@ type GuestList struct {
 // GuestListProjector is a projector that updates the guest list.
 type GuestListProjector struct {
 	repository eh.ReadRepository
-	eventID    ID64
+	eventID    eh.ID
 }
 
 // NewGuestListProjector creates a new GuestListProjector.
-func NewGuestListProjector(repository eh.ReadRepository, eventID ID64) *GuestListProjector {
+func NewGuestListProjector(repository eh.ReadRepository, eventID eh.ID) *GuestListProjector {
 	p := &GuestListProjector{
 		repository: repository,
 		eventID:    eventID,

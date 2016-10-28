@@ -12,5 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package simple contains a simple runnable example of a CQRS/ES app.
-package simple
+// Package customid contains an example of a CQRS/ES app using the MongoDB adapter
+// using ID64 as ID.
+package customid

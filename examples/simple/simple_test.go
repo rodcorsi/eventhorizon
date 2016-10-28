@@ -24,7 +24,7 @@ import (
 	eventstore "github.com/looplab/eventhorizon/eventstore/memory"
 	readrepository "github.com/looplab/eventhorizon/readrepository/memory"
 
-	"github.com/looplab/eventhorizon/examples/default/domain"
+	"github.com/looplab/eventhorizon/examples/domain"
 )
 
 func Example() {
@@ -67,7 +67,7 @@ func Example() {
 	eventBus.AddHandler(invitationProjector, domain.InviteDeclinedEvent)
 
 	// Create and register a read model for a guest list.
-	eventID := eh.NewUUID()
+	eventID := eh.NewID()
 	guestListRepository := readrepository.NewReadRepository()
 	guestListProjector := domain.NewGuestListProjector(guestListRepository, eventID)
 	eventBus.AddHandler(guestListProjector, domain.InviteCreatedEvent)
@@ -78,7 +78,7 @@ func Example() {
 	// Note that Athena tries to decline the event, but that is not allowed
 	// by the domain logic in InvitationAggregate. The result is that she is
 	// still accepted.
-	athenaID := eh.NewUUID()
+	athenaID := eh.NewID()
 	commandBus.HandleCommand(&domain.CreateInvite{InvitationID: athenaID, Name: "Athena", Age: 42})
 	commandBus.HandleCommand(&domain.AcceptInvite{InvitationID: athenaID})
 	err = commandBus.HandleCommand(&domain.DeclineInvite{InvitationID: athenaID})
@@ -86,11 +86,11 @@ func Example() {
 		log.Printf("error: %s\n", err)
 	}
 
-	hadesID := eh.NewUUID()
+	hadesID := eh.NewID()
 	commandBus.HandleCommand(&domain.CreateInvite{InvitationID: hadesID, Name: "Hades"})
 	commandBus.HandleCommand(&domain.AcceptInvite{InvitationID: hadesID})
 
-	zeusID := eh.NewUUID()
+	zeusID := eh.NewID()
 	commandBus.HandleCommand(&domain.CreateInvite{InvitationID: zeusID, Name: "Zeus"})
 	commandBus.HandleCommand(&domain.DeclineInvite{InvitationID: zeusID})
 

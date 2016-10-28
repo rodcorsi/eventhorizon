@@ -14,13 +14,54 @@
 
 package eventhorizon
 
+import "github.com/looplab/eventhorizon/ids"
+
 // ID is an unique identifier interface
 type ID interface {
 	String() string
 }
 
-// NewID generates a new id
-// Alternatively for a custom id, any func() ID can be used instead.
-var NewID = func() ID {
-	return NewUUID()
+// IDFactory is a factory to generates new ids
+type IDFactory interface {
+	// NewID generates a new ID
+	NewID() ID
+
+	// CreateID generates a blank ID
+	CreateID() ID
+}
+
+type defaultFactory struct{}
+
+func (d *defaultFactory) NewID() ID {
+	return ids.NewUUID()
+}
+
+func (d *defaultFactory) CreateID() ID {
+	return ids.UUID("")
+}
+
+// default factory to type ids.UUID
+var factoryID IDFactory = new(defaultFactory)
+
+// RegisterID registers an id factory.
+func RegisterID(factory IDFactory) {
+	// test id factory
+	id := factory.NewID()
+	if id == nil {
+		panic("eventhorizon: created id is nil")
+	}
+
+	factoryID = factory
+}
+
+// NewID creates a new id using the factory
+// registered with RegisterID.
+func NewID() ID {
+	return factoryID.NewID()
+}
+
+// CreateID creates a blank id using the factory
+// registered with RegisterID.
+func CreateID() ID {
+	return factoryID.CreateID()
 }

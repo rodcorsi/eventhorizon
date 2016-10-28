@@ -87,7 +87,7 @@ func NewEventStore(config *EventStoreConfig) (*EventStore, error) {
 // TODO: Implement as atomic counter.
 // NOTE: Currently not used.
 type aggregateRecord struct {
-	AggregateID interface{}
+	AggregateID ID
 	Version     int
 	Events      []*eventRecord
 	// AggregateType        string
@@ -95,7 +95,7 @@ type aggregateRecord struct {
 }
 
 type eventRecord struct {
-	AggregateID interface{}
+	AggregateID ID
 	EventType   eh.EventType
 	Version     int
 	Timestamp   time.Time

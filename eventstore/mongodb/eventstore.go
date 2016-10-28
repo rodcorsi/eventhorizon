@@ -82,7 +82,7 @@ func NewEventStoreWithSession(session *mgo.Session, database string) (*EventStor
 }
 
 type aggregateRecord struct {
-	AggregateID interface{}    `bson:"_id"`
+	AggregateID eh.ID          `bson:"_id"`
 	Version     int            `bson:"version"`
 	Events      []*eventRecord `bson:"events"`
 	// Type        string        `bson:"type"`
@@ -169,7 +169,12 @@ func (s *EventStore) Load(id eh.ID) ([]eh.Event, error) {
 	sess := s.session.Copy()
 	defer sess.Close()
 
-	var aggregate aggregateRecord
+	var aggregate struct {
+		AggregateID bson.Raw       `bson:"_id"`
+		Version     int            `bson:"version"`
+		Events      []*eventRecord `bson:"events"`
+	}
+
 	err := sess.DB(s.db).C("events").FindId(id).One(&aggregate)
 	if err == mgo.ErrNotFound {
 		return []eh.Event{}, nil

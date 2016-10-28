@@ -21,6 +21,7 @@ import (
 	"testing"
 
 	eh "github.com/looplab/eventhorizon"
+	"github.com/looplab/eventhorizon/ids"
 )
 
 func EventStoreCommonTests(t *testing.T, store eh.EventStore) []eh.Event {
@@ -33,7 +34,7 @@ func EventStoreCommonTests(t *testing.T, store eh.EventStore) []eh.Event {
 	}
 
 	t.Log("save event, version 1")
-	id, _ := eh.ParseUUID("c1138e5f-f6fb-4dd0-8e79-255c6c8d3756")
+	id, _ := ids.ParseUUID("c1138e5f-f6fb-4dd0-8e79-255c6c8d3756")
 	event1 := &TestEvent{id, "event1"}
 	err = store.Save([]eh.Event{event1}, 0)
 	if err != nil {
@@ -64,7 +65,7 @@ func EventStoreCommonTests(t *testing.T, store eh.EventStore) []eh.Event {
 	savedEvents = append(savedEvents, event1, event2, event1)
 
 	t.Log("save event for another aggregate")
-	id2, _ := eh.ParseUUID("c1138e5e-f6fb-4dd0-8e79-255c6c8d3756")
+	id2, _ := ids.ParseUUID("c1138e5e-f6fb-4dd0-8e79-255c6c8d3756")
 	event3 := &TestEvent{id2, "event3"}
 	err = store.Save([]eh.Event{event3}, 0)
 	if err != nil {

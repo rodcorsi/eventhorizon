@@ -75,7 +75,7 @@ func (i *InvitationAggregate) HandleCommand(command eh.Command) error {
 			return nil
 		}
 
-		i.StoreEvent(&InviteAccepted{i.AggregateID().(eh.UUID)})
+		i.StoreEvent(&InviteAccepted{i.AggregateID()})
 		return nil
 
 	case *DeclineInvite:
@@ -91,7 +91,7 @@ func (i *InvitationAggregate) HandleCommand(command eh.Command) error {
 			return nil
 		}
 
-		i.StoreEvent(&InviteDeclined{i.AggregateID().(eh.UUID)})
+		i.StoreEvent(&InviteDeclined{i.AggregateID()})
 		return nil
 	}
 	return fmt.Errorf("couldn't handle command")

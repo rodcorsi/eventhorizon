@@ -32,7 +32,7 @@ const (
 
 // InviteCreated is an event for when an invite has been created.
 type InviteCreated struct {
-	InvitationID ID64   `bson:"invitation_id"`
+	InvitationID eh.ID  `bson:"invitation_id"`
 	Name         string `bson:"name"`
 	Age          int    `bson:"age"`
 }
@@ -43,7 +43,7 @@ func (c InviteCreated) EventType() eh.EventType         { return InviteCreatedEv
 
 // InviteAccepted is an event for when an invite has been accepted.
 type InviteAccepted struct {
-	InvitationID ID64 `bson:"invitation_id"`
+	InvitationID eh.ID `bson:"invitation_id"`
 }
 
 func (c InviteAccepted) AggregateID() eh.ID              { return c.InvitationID }
@@ -52,7 +52,7 @@ func (c InviteAccepted) EventType() eh.EventType         { return InviteAccepted
 
 // InviteDeclined is an event for when an invite has been declined.
 type InviteDeclined struct {
-	InvitationID ID64 `bson:"invitation_id"`
+	InvitationID eh.ID `bson:"invitation_id"`
 }
 
 func (c InviteDeclined) AggregateID() eh.ID              { return c.InvitationID }

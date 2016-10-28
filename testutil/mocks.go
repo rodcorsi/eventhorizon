@@ -61,7 +61,7 @@ func (t *TestAggregate) ApplyEvent(event eh.Event) {
 }
 
 type TestEvent struct {
-	TestID  eh.UUID
+	TestID  eh.ID
 	Content string
 }
 
@@ -70,7 +70,7 @@ func (t TestEvent) AggregateType() eh.AggregateType { return TestAggregateType }
 func (t TestEvent) EventType() eh.EventType         { return TestEventType }
 
 type TestEventOther struct {
-	TestID  eh.UUID
+	TestID  eh.ID
 	Content string
 }
 
@@ -79,7 +79,7 @@ func (t TestEventOther) AggregateType() eh.AggregateType { return TestAggregateT
 func (t TestEventOther) EventType() eh.EventType         { return TestEventOtherType }
 
 type TestCommand struct {
-	TestID  eh.UUID
+	TestID  eh.ID
 	Content string
 }
 
@@ -88,7 +88,7 @@ func (t TestCommand) AggregateType() eh.AggregateType { return TestAggregateType
 func (t TestCommand) CommandType() eh.CommandType     { return TestCommandType }
 
 type TestCommandOther struct {
-	TestID  eh.UUID
+	TestID  eh.ID
 	Content string
 }
 
@@ -97,7 +97,7 @@ func (t TestCommandOther) AggregateType() eh.AggregateType { return TestAggregat
 func (t TestCommandOther) CommandType() eh.CommandType     { return TestCommandOtherType }
 
 type TestCommandOther2 struct {
-	TestID  eh.UUID
+	TestID  eh.ID
 	Content string
 }
 
@@ -106,7 +106,7 @@ func (t TestCommandOther2) AggregateType() eh.AggregateType { return TestAggrega
 func (t TestCommandOther2) CommandType() eh.CommandType     { return TestCommandOther2Type }
 
 type TestModel struct {
-	ID        eh.UUID   `json:"id"         bson:"_id"`
+	ID        eh.ID     `json:"id"         bson:"_id"`
 	Content   string    `json:"content"    bson:"content"`
 	CreatedAt time.Time `json:"created_at" bson:"created_at"`
 }
